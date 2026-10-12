@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Joker Obfuscator Pro</title>
+    <style>
+        /* --- Thème de base (Clair) --- */
+        :root {
+            --bg-color: #f4f7f9;
+            --main-color: #ffffff;
+            --text-color: #333333;
+            --primary-color: #007bff;
+            --primary-hover: #0056b3;
+            --border-color: #d1d9e0;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --output-bg: #e9ecef;
+        }
+
+        /* --- Thème Sombre --- */
+        body.dark-theme {
+            --bg-color: #1a1a1a;
+            --main-color: #2c2c2c;
+            --text-color: #f1f1f1;
+            --primary-color: #4a90e2;
+            --primary-hover: #357abd;
+            --border-color: #444444;
+            --shadow-color: rgba(0, 0, 0, 0.4);
+            --output-bg: #333333;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            color: #888;
+        }
+
+        .theme-switcher {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            font-size: 1.5rem;
+            border: 2px solid var(--border-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+        }
+        .theme-switcher:hover {
+            transform: scale(1.1);
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        @media (min-width: 992px) {
+            .dashboard {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .panel {
+            background-color: var(--main-color);
+            border-radius: 10px;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 4px 15px var(--shadow-color);
+            border: 1px solid var(--border-color);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .panel h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+            display: inline-block;
+        }
+        
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        textarea, input[type="text"] {
+            width: 100%;
+            padding: 0.8rem;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.95rem;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            resize: vertical;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        textarea {
+            min-height: 200px;
+        }
+        
+        textarea#output, textarea#deobfuscated-output {
+            background-color: var(--output-bg);
+        }
+
+        .actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 0.8rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            color: #fff;
+        }
+        
+        button.primary {
+            background-color: var(--primary-color);
+        }
+        button.primary:hover {
+            background-color: var(--primary-hover);
+        }
+        
+        button.secondary {
+            background-color: #6c757d;
+        }
+        button.secondary:hover {
+            background-color: #5a6268;
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <div class="theme-switcher" id="theme-switcher">🌙</div>
+            <h1>Joker Obfuscator Pro</h1>
+            <p>By ©By Joker Smiler</p>
+        </header>
+
+        <div class="dashboard">
+            <!-- Panneau d'Obfuscation -->
+            <div class="panel">
+                <h2>Obfuscation</h2>
+                <div class="input-group">
+                    <label for="html-input">Code HTML à obfusquer</label>
+                    <textarea id="html-input" placeholder="Collez votre code HTML, CSS, JS ici..."><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Exemple</title>
+</head>
+<body>
+    <h1>Super ça passe !</h1>
+</body>
+</html></textarea>
+                </div>
+                <div class="input-group">
+                    <label for="key-input">Clé de chiffrement</label>
+                    <input type="text" id="key-input" value="kilo@120" placeholder="Entrez une clé secrète">
+                </div>
+                <div class="actions">
+                    <button class="primary" id="obfuscate-btn">Obfusquer le Code</button>
+                </div>
+                <div class="input-group" style="margin-top: 1.5rem;">
+                    <label for="output">Code Obfusqué</label>
+                    <textarea id="output" readonly placeholder="Le résultat apparaîtra ici..."></textarea>
+                </div>
+                 <div class="actions">
+                    <button class="secondary" id="copy-obfuscated-btn">Copier le résultat</button>
+                </div>
+            </div>
+
+            <!-- Panneau de Désobfuscation -->
+            <div class="panel">
+                <h2>Désobfuscation</h2>
+                <div class="input-group">
+                    <label for="obfuscated-input">Code Obfusqué à déchiffrer</label>
+                    <textarea id="obfuscated-input" placeholder="Collez le code généré pour le déchiffrer..."></textarea>
+                </div>
+                <div class="input-group">
+                    <label for="deobfuscate-key-input">Clé de chiffrement</label>
+                    <input type="text" id="deobfuscate-key-input" value="kilo@120" placeholder="La clé utilisée pour l'obfuscation">
+                </div>
+                <div class="actions">
+                    <button class="primary" id="deobfuscate-btn">Désobfusquer le Code</button>
+                </div>
+                <div class="input-group" style="margin-top: 1.5rem;">
+                    <label for="deobfuscated-output">Code Original</label>
+                    <textarea id="deobfuscated-output" readonly placeholder="Le code original apparaîtra ici..."></textarea>
+                </div>
+                <div class="actions">
+                    <button class="secondary" id="copy-deobfuscated-btn">Copier le résultat</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        // --- GESTION DU THÈME ---
+        const themeSwitcher = document.getElementById('theme-switcher');
+        const currentTheme = localStorage.getItem('theme');
+
+        if (currentTheme === 'dark') {
+            document.body.classList.add('dark-theme');
+            themeSwitcher.textContent = '☀️';
+        }
+
+        themeSwitcher.addEventListener('click', () => {
+            document.body.classList.toggle('dark-theme');
+            let theme = 'light';
+            if (document.body.classList.contains('dark-theme')) {
+                theme = 'dark';
+                themeSwitcher.textContent = '☀️';
+            } else {
+                 themeSwitcher.textContent = '🌙';
+            }
+            localStorage.setItem('theme', theme);
+        });
+        
+        // --- SÉLECTION DES ÉLÉMENTS DU DOM ---
+        const obfuscateBtn = document.getElementById('obfuscate-btn');
+        const deobfuscateBtn = document.getElementById('deobfuscate-btn');
+        const copyObfuscatedBtn = document.getElementById('copy-obfuscated-btn');
+        const copyDeobfuscatedBtn = document.getElementById('copy-deobfuscated-btn');
+
+        const htmlInput = document.getElementById('html-input');
+        const keyInput = document.getElementById('key-input');
+        const output = document.getElementById('output');
+        
+        const obfuscatedInput = document.getElementById('obfuscated-input');
+        const deobfuscateKeyInput = document.getElementById('deobfuscate-key-input');
+        const deobfuscatedOutput = document.getElementById('deobfuscated-output');
+
+
+        // --- LOGIQUE D'OBFUSCATION / DÉSOBFUSCATION ---
+
+        // Table de substitution des caractères Kanji (identique à votre ancien script)
+        const KANJI_MAP = {
+            "A": "亜", "B": "唖", "C": "娃", "D": "阿", "E": "哀", "F": "愛", "G": "挨", "H": "姶",
+            "I": "逢", "J": "葵", "K": "茜", "L": "穐", "M": "悪", "N": "握", "O": "渥", "P": "旭",
+            "Q": "葦", "R": "芦", "S": "鯵", "T": "梓", "U": "圧", "V": "斡", "W": "扱", "X": "宛",
+            "Y": "姐", "Z": "虻",
+            "a": "a", "b": "b", "c": "c", "d": "d", "e": "e", "f": "f", "g": "g", "h": "h",
+            "i": "i", "j": "j", "k": "k", "l": "l", "m": "m", "n": "n", "o": "o", "p": "p",
+            "q": "q", "r": "r", "s": "s", "t": "t", "u": "u", "v": "v", "w": "w", "x": "x",
+            "y": "y", "z": "z",
+            "0": "0", "1": "1", "2": "2", "3": "3", "4": "4", "5": "5", "6": "6", "7": "7",
+            "8": "8", "9": "9", "+": "+", "/": "/"
+        };
+        
+        const REVERSE_KANJI_MAP = Object.fromEntries(Object.entries(KANJI_MAP).map(([k, v]) => [v, k]));
+
+        // 1. Chiffrement/Déchiffrement XOR
+        const xorCipher = (str, key) => {
+            let result = '';
+            for (let i = 0; i < str.length; i++) {
+                result += String.fromCharCode(str.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+            }
+            return result;
+        };
+        
+        // 2. Fonctions de Hash et de générateur de nombres pseudo-aléatoires (identiques à votre script)
+        const simpleHash = (str) => {
+            let h = 0;
+            for (let i = 0; i < str.length; i++) {
+                h = (h << 5) - h + str.charCodeAt(i);
+                h |= 0;
+            }
+            return h >>> 0;
+        };
+
+        const seededRandom = (seed) => {
+            return function() {
+                var t = seed += 0x6D2B79F5;
+                t = Math.imul(t ^ (t >>> 15), t | 1);
+                t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+                return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+            };
+        };
+        
+        // 3. Mélange et Dé-mélange de la chaîne
+        const shuffleString = (str, seed) => {
+            let arr = str.split('');
+            let random = seededRandom(simpleHash(seed));
+            for (let i = arr.length - 1; i > 0; i--) {
+                let j = Math.floor(random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]]; // Swap
+            }
+            return arr.join('');
+        };
+        
+        const unshuffleString = (str, seed) => {
+            let arr = str.split('');
+            let random = seededRandom(simpleHash(seed));
+            let shuffleMap = [];
+            for (let i = arr.length - 1; i > 0; i--) {
+                shuffleMap.push(Math.floor(random() * (i + 1)));
+            }
+            for (let i = 1; i < arr.length; i++) {
+                 let j = shuffleMap[arr.length - 1 - i];
+                [arr[i], arr[j]] = [arr[j], arr[i]]; // Swap inverse
+            }
+            return arr.join('');
+        };
+
+        // 4. Substitution
+        const substituteChars = (str, map) => {
+             return str.split('').map(c => map[c] || c).join('');
+        }
+        
+        // --- Processus d'Obfuscation ---
+        obfuscateBtn.addEventListener('click', () => {
+            try {
+                const html = htmlInput.value;
+                const key = keyInput.value;
+                if (!html || !key) {
+                    alert("Veuillez fournir un code HTML et une clé.");
+                    return;
+                }
+                
+                // Étape 1: Encodage Base64
+                const base64Encoded = btoa(unescape(encodeURIComponent(html)));
+                
+                // Étape 2: Chiffrement XOR
+                const xorEncrypted = xorCipher(base64Encoded, key);
+
+                // Étape 3: Mélange des caractères
+                const shuffled = shuffleString(xorEncrypted, key);
+                
+                // Étape 4: Substitution par Kanji
+                const kanjiSubstituted = substituteChars(shuffled, KANJI_MAP);
+                
+                // Étape 5: Création du script final
+                const finalScript = `<!-- Obfuscation By ©By Joker Smiler -->
+<script>
+var _0xdeadbeef = "${kanjiSubstituted}";
+(function(){
+    var k = "${key}";
+    var d = function(s){
+        const m = ${JSON.stringify(REVERSE_KANJI_MAP)};
+        let r = ''; for(let i=0;i<s.length;i++){r+=m[s[i]]||s[i];}
+        return r;
+    };
+    var u = function(s, seed){
+        let a=s.split(''),r=function(d){return function(){var t=d+=0x6D2B79F5;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return((t^(t>>>14))>>>0)/4294967296;}}((function(h){let a=0;for(let i=0;i<h.length;i++){a=(a<<5)-a+h.charCodeAt(i);a|=0;}return a>>>0;})(seed)),m=[];
+        for(let i=a.length-1;i>0;i--){m.push(Math.floor(r()*(i+1)));}
+        for(let i=1;i<a.length;i++){let j=m[a.length-1-i];[a[i],a[j]]=[a[j],a[i]];}
+        return a.join('');
+    };
+    var x = function(s, key){let r='';for(let i=0;i<s.length;i++){r+=String.fromCharCode(s.charCodeAt(i)^key.charCodeAt(i%key.length));}return r;};
+    var b = function(s){return decodeURIComponent(escape(atob(s)));};
+    var p = b(x(u(d(_0xdeadbeef), k), k));
+    document.write(p);
+})();
+<\/script>`;
+                
+                output.value = finalScript;
+                
+            } catch (e) {
+                output.value = "Erreur lors de l'obfuscation : " + e.message;
+            }
+        });
+
+        // --- Processus de Désobfuscation ---
+        deobfuscateBtn.addEventListener('click', () => {
+            try {
+                const scriptContent = obfuscatedInput.value;
+                const key = deobfuscateKeyInput.value;
+                if (!scriptContent || !key) {
+                    alert("Veuillez fournir le code obfusqué et la clé.");
+                    return;
+                }
+                
+                // Étape 1: Extraire la chaîne obfusquée
+                const match = scriptContent.match(/var\s+_0xdeadbeef\s*=\s*"([^"]+)"/);
+                if (!match || !match[1]) {
+                    throw new Error("Impossible de trouver la chaîne de données obfusquée dans le script.");
+                }
+                const kanjiSubstituted = match[1];
+
+                // Opérations inverses
+                // Étape 2: Substitution inverse
+                const shuffled = substituteChars(kanjiSubstituted, REVERSE_KANJI_MAP);
+                
+                // Étape 3: Dé-mélange
+                const xorEncrypted = unshuffleString(shuffled, key);
+
+                // Étape 4: Déchiffrement XOR
+                const base64Encoded = xorCipher(xorEncrypted, key);
+                
+                // Étape 5: Décodage Base64
+                const originalHtml = decodeURIComponent(escape(atob(base64Encoded)));
+                
+                deobfuscatedOutput.value = originalHtml;
+                
+            } catch (e) {
+                deobfuscatedOutput.value = "Erreur lors de la désobfuscation : " + e.message + ". Vérifiez la clé ou le format du code.";
+            }
+        });
+        
+        // --- Fonctions de copie ---
+        copyObfuscatedBtn.addEventListener('click', () => {
+            output.select();
+            document.execCommand('copy');
+            alert('Code obfusqué copié !');
+        });
+
+        copyDeobfuscatedBtn.addEventListener('click', () => {
+            deobfuscatedOutput.select();
+            document.execCommand('copy');
+            alert('Code désobfusqué copié !');
+        });
+    });
+    </script>
+</body>
+</html>

@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BJ | HTML Encryption & Decryption</title>
+    <style>
+        :root {
+            --primary-color-light: #4a90e2;
+            --secondary-color-light: #f4f7fc;
+            --background-color-light: #ffffff;
+            --text-color-light: #333333;
+            --border-color-light: #dcdcdc;
+
+            --primary-color-dark: #6a11cb;
+            --secondary-color-dark: #1f1c2c;
+            --background-color-dark: #121212;
+            --text-color-dark: #e0e0e0;
+            --border-color-dark: #444444;
+        }
+
+        [data-theme="light"] {
+            --primary-color: var(--primary-color-light);
+            --secondary-color: var(--secondary-color-light);
+            --background-color: var(--background-color-light);
+            --text-color: var(--text-color-light);
+            --border-color: var(--border-color-light);
+        }
+
+        [data-theme="dark"] {
+            --primary-color: var(--primary-color-dark);
+            --secondary-color: var(--secondary-color-dark);
+            --background-color: var(--background-color-dark);
+            --text-color: var(--text-color-dark);
+            --border-color: var(--border-color-dark);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            transition: background-color 0.3s, color 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .dashboard {
+            width: 100%;
+            max-width: 900px;
+            background: var(--secondary-color);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .header {
+            background: var(--primary-color);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 2em;
+        }
+        
+        .header p {
+            margin: 5px 0 0;
+            opacity: 0.9;
+        }
+
+        .theme-switcher {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            cursor: pointer;
+            font-size: 1.5em;
+        }
+
+        .main-content {
+            padding: 20px;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .tab-button {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 1em;
+            color: var(--text-color);
+            border-bottom: 3px solid transparent;
+            margin-bottom: -1px;
+            transition: border-color 0.3s, color 0.3s;
+        }
+
+        .tab-button.active {
+            border-bottom-color: var(--primary-color);
+            font-weight: bold;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        textarea, input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: var(--background-color);
+            color: var(--text-color);
+            box-sizing: border-box;
+            font-family: 'Courier New', Courier, monospace;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        textarea {
+            height: 150px;
+            resize: vertical;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: opacity 0.3s;
+        }
+
+        .encode-btn {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .encode-btn:hover {
+            opacity: 0.9;
+        }
+
+        .clear-btn {
+            background-color: #f44336;
+            color: white;
+        }
+        
+        .clear-btn:hover {
+             opacity: 0.9;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 15px;
+            background: var(--secondary-color);
+            border-top: 1px solid var(--border-color);
+            font-size: 0.9em;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+    </style>
+</head>
+<body>
+
+<div class="dashboard">
+    <div class="header">
+        <h1>BJ | HTML Encryption</h1>
+        <p>Secure your HTML with smart encryption</p>
+        <div class="theme-switcher" id="theme-switcher">🌙</div>
+    </div>
+
+    <div class="main-content">
+        <div class="tabs">
+            <button class="tab-button active" onclick="openTab(event, 'obfuscate')">Obfuscation</button>
+            <button class="tab-button" onclick="openTab(event, 'deobfuscate')">Désobfuscation</button>
+        </div>
+
+        <div id="obfuscate" class="tab-content active">
+            <div class="form-group">
+                <label for="html-input-obfuscate">Enter HTML Code</label>
+                <textarea id="html-input-obfuscate" placeholder="Enter your HTML code here"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="key-input-obfuscate">Encryption Key</label>
+                <input type="text" id="key-input-obfuscate" placeholder="Any, minimum 4 characters">
+            </div>
+            <div class="button-group">
+                <button class="encode-btn" onclick="obfuscateHtml()">Encode</button>
+                <button class="clear-btn" onclick="clearFields('obfuscate')">Clear</button>
+            </div>
+        </div>
+
+        <div id="deobfuscate" class="tab-content">
+             <div class="form-group">
+                <label for="html-input-deobfuscate">Enter Obfuscated Code</label>
+                <textarea id="html-input-deobfuscate" placeholder="Enter your obfuscated code here"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="key-input-deobfuscate">Decryption Key</label>
+                <input type="text" id="key-input-deobfuscate" placeholder="Enter the original encryption key">
+            </div>
+            <div class="button-group">
+                <button class="encode-btn" onclick="deobfuscateHtml()">Decode</button>
+                <button class="clear-btn" onclick="clearFields('deobfuscate')">Clear</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>©By Joker Smiler</p>
+    </div>
+</div>
+
+<script>
+    // --- UI Logic ---
+    const themeSwitcher = document.getElementById('theme-switcher');
+    const doc = document.documentElement;
+
+    themeSwitcher.addEventListener('click', () => {
+        const currentTheme = doc.getAttribute('data-theme');
+        if (currentTheme === 'dark') {
+            doc.setAttribute('data-theme', 'light');
+            themeSwitcher.textContent = '🌙';
+        } else {
+            doc.setAttribute('data-theme', 'dark');
+            themeSwitcher.textContent = '☀️';
+        }
+    });
+
+    function openTab(evt, tabName) {
+        let i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tab-content");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("tab-button");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.className += " active";
+    }
+
+    function clearFields(tab) {
+        document.getElementById(`html-input-${tab}`).value = '';
+        const keyInput = document.getElementById(`key-input-${tab}`);
+        if(keyInput) keyInput.value = '';
+    }
+
+    // --- Core Encryption/Decryption Logic ---
+
+    // These two functions (hashCode and prng) are based on your original script to ensure consistency.
+    function hashCode(str) {
+        let h = 0;
+        for (let i = 0; i < str.length; i++) {
+            h = (h << 5) - h + str.charCodeAt(i);
+            h |= 0; // Convert to 32bit integer
+        }
+        return h >>> 0; // Make it unsigned
+    }
+
+    function prng(seed) {
+        return function() {
+            var t = seed += 0x6D2B79F5;
+            t = Math.imul(t ^ (t >>> 15), t | 1);
+            t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+            return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+        };
+    }
+
+    function xorCipher(text, key) {
+        let result = '';
+        for (let i = 0; i < text.length; i++) {
+            result += String.fromCharCode(text.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+        }
+        return result;
+    }
+
+    const charMap = {"A":"亜","B":"唖","C":"娃","D":"阿","E":"哀","F":"愛","G":"挨","H":"姶","I":"逢","J":"葵","K":"茜","L":"穐","M":"悪","N":"握","O":"渥","P":"旭","Q":"葦","R":"葦","S":"鯵","T":"梓","U":"圧","V":"斡","W":"扱","X":"宛","Y":"姐","Z":"虻"};
+    const reverseCharMap = Object.fromEntries(Object.entries(charMap).map(a => a.reverse()));
+
+    function substitute(str) {
+        return str.split('').map(c => charMap[c] || c).join('');
+    }
+
+    function unsubstitute(str) {
+        return str.split('').map(c => reverseCharMap[c] || c).join('');
+    }
+
+    // Correct shuffle function based on your script's logic
+    function shuffle(str, seed) {
+        let array = str.split('');
+        const random = prng(hashCode(seed));
+        let indices = [];
+        for (let i = array.length - 1; i > 0; i--) {
+            indices.push(Math.floor(random() * (i + 1)));
+        }
+        for (let i = 1; i < array.length; i++) {
+            let j = indices[array.length - 1 - i];
+            [array[i], array[j]] = [array[j], array[i]]; // Swap
+        }
+        return array.join('');
+    }
+
+    // Correct unshuffle function that is the exact inverse of shuffle
+    function unshuffle(str, seed) {
+        let array = str.split('');
+        const random = prng(hashCode(seed));
+        let indices = [];
+        for (let i = array.length - 1; i > 0; i--) {
+            indices.push(Math.floor(random() * (i + 1)));
+        }
+        for (let i = array.length - 1; i > 0; i--) {
+            let j = indices[array.length - 1 - i];
+            [array[i], array[j]] = [array[j], array[i]]; // Swap in reverse order
+        }
+        return array.join('');
+    }
+
+    // --- Button Actions ---
+
+    function obfuscateHtml() {
+        const htmlCode = document.getElementById('html-input-obfuscate').value;
+        const key = document.getElementById('key-input-obfuscate').value;
+
+        if (htmlCode.trim() === '' || key.length < 4) {
+            alert('Please enter HTML code and a key of at least 4 characters.');
+            return;
+        }
+
+        try {
+            const encrypted = xorCipher(htmlCode, key);
+            const base64Encoded = btoa(encrypted);
+            const shuffled = shuffle(base64Encoded, key);
+            const substituted = substitute(shuffled);
+
+            const result = `<!-- Encryption By @JokerSmiler -->
+<script>
+var _0xdeadbeef = "${substituted}";
+(function(p){function d(s,k){let r='';for(let i=0;i<s.length;i++){r+=String.fromCharCode(s.charCodeAt(i)^k.charCodeAt(i%k.length));}return r}function u(s){return atob(s)}function s(t,d){let a=t.split(''),n=function(s){return function(){var t=s+=0x6D2B79F5;return t=Math.imul(t^t>>>15,t|1),t^=t+Math.imul(t^t>>>7,t|61),((t^t>>>14)>>>0)/4294967296}}(function(s){let t=0;for(let a=0;a<s.length;a++)t=(t<<5)-t+s.charCodeAt(a),t|=0;return t>>>0}(d)),e=[];for(let s=a.length-1;s>0;s--)e.push(Math.floor(n()*(s+1)));for(let s=a.length-1;s>0;s--){let t=e[a.length-1-s];[a[s],a[t]]=[a[t],a[s]]}return a.join('')}function r(s){const t={"亜":"A","唖":"B","娃":"C","阿":"D","哀":"E","愛":"F","挨":"G","姶":"H","逢":"I","葵":"J","茜":"K","穐":"L","悪":"M","握":"N","渥":"O","旭":"P","葦":"R","鯵":"S","梓":"T","圧":"U","斡":"V","扱":"W","宛":"X","姐":"Y","虻":"Z"};return s.split('').map(s=>t[s]||s).join('')}document.write(d(u(s(r(_0xdeadbeef),"${key}")),"${key}"));})("${key}");
+<\/script>`;
+            
+            document.getElementById('html-input-obfuscate').value = result;
+
+        } catch (e) {
+            alert('An error occurred during obfuscation.');
+            console.error(e);
+        }
+    }
+
+    function deobfuscateHtml() {
+        const obfuscatedCode = document.getElementById('html-input-deobfuscate').value;
+        let key = document.getElementById('key-input-deobfuscate').value;
+
+        try {
+            // Try to extract key from the script if not provided
+            if (key.trim() === '') {
+                 const keyMatch = obfuscatedCode.match(/}\)\("([^"]+)"\);/);
+                 if (keyMatch && keyMatch[1]) {
+                     key = keyMatch[1];
+                     document.getElementById('key-input-deobfuscate').value = key;
+                 } else {
+                     alert('Could not automatically find the key. Please provide it.');
+                     return;
+                 }
+            }
+
+            const dataMatch = obfuscatedCode.match(/var\s_0xdeadbeef\s=\s"([^"]+)"/);
+            if (!dataMatch) {
+                alert('Invalid obfuscated code format.');
+                return;
+            }
+            const data = dataMatch[1];
+
+            const unsubstituted = unsubstitute(data);
+            const unshuffled = unshuffle(unsubstituted, key);
+            const base64Decoded = atob(unshuffled);
+            const originalHtml = xorCipher(base64Decoded, key);
+
+            document.getElementById('html-input-deobfuscate').value = originalHtml;
+        } catch (e) {
+            alert('An error occurred during deobfuscation. The key might be incorrect or the code corrupted.');
+            console.error(e);
+        }
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,8 @@
+node_modules/
+.env*
+*.zip
+*.rar
+*.mp4
+*.exe
+bun-windows-x64/
+*.log

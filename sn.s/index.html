@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Obfuscator Pro - By BJ_DEVS</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔐 Code Obfuscator Pro</h1>
+            <p>Protégez votre code avec une obfuscation multi-couches avancée</p>
+        </div>
+
+        <div class="dashboard">
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab(event, 'obfuscate')">🔒 Obfusquer</button>
+                <button class="tab" onclick="switchTab(event, 'deobfuscate')">🔓 Déobfusquer</button>
+            </div>
+
+            <div id="alert" class="alert"></div>
+
+            <!-- TAB OBFUSCATION -->
+            <div id="obfuscate-tab" class="tab-content active">
+                <div class="input-section">
+                    <h3>📥 Source du code</h3>
+                    <div class="input-method">
+                        <button class="active" onclick="switchInput(event, 'text')">✍️ Coller le code</button>
+                        <button onclick="switchInput(event, 'file')">📁 Charger un fichier</button>
+                    </div>
+
+                    <textarea id="input-text" placeholder="Collez votre code HTML, CSS ou JavaScript ici..."></textarea>
+                    
+                    <div id="file-upload" class="file-upload">
+                        <input type="file" id="file-input" accept=".html,.css,.js,.htm" onchange="handleFileSelect(event)">
+                        <div onclick="document.getElementById('file-input').click()">
+                            <p style="font-size: 3em; margin-bottom: 10px;">📤</p>
+                            <p style="font-size: 1.2em; font-weight: 600; margin-bottom: 5px;">Cliquez pour sélectionner un fichier</p>
+                            <p style="color: #666;">Formats supportés: HTML, CSS, JavaScript</p>
+                        </div>
+                        <div id="file-info" class="file-info"></div>
+                    </div>
+                </div>
+
+                <div class="options">
+                    <div class="option">
+                        <label>🔑 Clé de chiffrement</label>
+                        <input type="text" id="encrypt-key" placeholder="Minimum 4 caractères" value="BJ_DEVS_2024">
+                    </div>
+                    <div class="option">
+                        <label>🎯 Niveau d'obfuscation</label>
+                        <select id="obfuscation-level">
+                            <option value="basic">Basique (rapide)</option>
+                            <option value="medium" selected>Moyen (recommandé)</option>
+                            <option value="advanced">Avancé (maximum)</option>
+                        </select>
+                    </div>
+                    <div class="option">
+                        <label>
+                            <input type="checkbox" id="add-comments" checked>
+                            Ajouter des commentaires de protection
+                        </label>
+                    </div>
+                    <div class="option">
+                        <label>
+                            <input type="checkbox" id="compress" checked>
+                            Compresser le code
+                        </label>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button class="btn btn-primary" onclick="obfuscateCode()">🔒 Obfusquer le code</button>
+                    <button class="btn btn-secondary" onclick="clearAll()">🗑️ Effacer tout</button>
+                </div>
+
+                <div id="output-obfuscate" class="output-section">
+                    <div class="output-header">
+                        <h3>✅ Code obfusqué</h3>
+                        <div class="output-actions">
+                            <button class="btn btn-success btn-small" onclick="copyOutput()">📋 Copier</button>
+                            <button class="btn btn-primary btn-small" onclick="downloadOutput()">💾 Télécharger</button>
+                        </div>
+                    </div>
+                    <textarea id="output-text" readonly></textarea>
+                    
+                    <div class="stats">
+                        <div class="stat-card">
+                            <h4>Taille originale</h4>
+                            <div class="value" id="original-size">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <h4>Taille obfusquée</h4>
+                            <div class="value" id="obfuscated-size">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <h4>Temps d'exécution</h4>
+                            <div class="value" id="exec-time">0ms</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB DEOBFUSCATION -->
+            <div id="deobfuscate-tab" class="tab-content">
+                <div class="input-section">
+                    <h3>📥 Code obfusqué</h3>
+                    <textarea id="deobfuscate-input" placeholder="Collez votre code obfusqué ici..."></textarea>
+                </div>
+
+                <div class="options">
+                    <div class="option">
+                        <label>🔑 Clé de déchiffrement</label>
+                        <input type="text" id="decrypt-key" placeholder="Entrez la clé utilisée" value="BJ_DEVS_2024">
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button class="btn btn-primary" onclick="deobfuscateCode()">🔓 Déobfusquer le code</button>
+                    <button class="btn btn-secondary" onclick="clearDeobfuscate()">🗑️ Effacer tout</button>
+                </div>
+
+                <div id="output-deobfuscate" class="output-section">
+                    <div class="output-header">
+                        <h3>✅ Code déobfusqué</h3>
+                        <div class="output-actions">
+                            <button class="btn btn-success btn-small" onclick="copyDeobfuscated()">📋 Copier</button>
+                            <button class="btn btn-primary btn-small" onclick="downloadDeobfuscated()">💾 Télécharger</button>
+                        </div>
+                    </div>
+                    <textarea id="deobfuscate-output" readonly></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>© 2024 By @BJ_DEVS - Telegram</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

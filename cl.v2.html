@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Obfuscator Pro - By BJ_DEVS</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .dashboard {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .tab {
+            padding: 15px 30px;
+            background: none;
+            border: none;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #666;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab:hover {
+            color: #667eea;
+        }
+
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .input-section {
+            margin-bottom: 30px;
+        }
+
+        .input-section h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .input-method {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .input-method button {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .input-method button.active {
+            border-color: #667eea;
+            background: #f0f4ff;
+            color: #667eea;
+        }
+
+        .file-upload {
+            display: none;
+            border: 2px dashed #667eea;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            background: #f8f9ff;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .file-upload:hover {
+            background: #f0f4ff;
+            border-color: #764ba2;
+        }
+
+        .file-upload.active {
+            display: block;
+        }
+
+        .file-upload input {
+            display: none;
+        }
+
+        .file-info {
+            margin-top: 15px;
+            padding: 10px;
+            background: #e8f0ff;
+            border-radius: 8px;
+            display: none;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 300px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .option {
+            padding: 15px;
+            background: #f8f9ff;
+            border-radius: 10px;
+        }
+
+        .option label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .option input[type="text"],
+        .option select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .option input[type="checkbox"] {
+            margin-right: 8px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .output-section {
+            margin-top: 30px;
+            display: none;
+        }
+
+        .output-section.show {
+            display: block;
+        }
+
+        .output-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .output-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 0.9em;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-card h4 {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+
+        .stat-card .value {
+            font-size: 1.8em;
+            font-weight: 700;
+        }
+
+        .footer {
+            text-align: center;
+            color: white;
+            margin-top: 30px;
+            font-size: 1.1em;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .alert.show {
+            display: block;
+            animation: slideDown 0.3s;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border-left: 4px solid #10b981;
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border-left: 4px solid #ef4444;
+        }
+
+        .alert-warning {
+            background: #fef3c7;
+            color: #92400e;
+            border-left: 4px solid #f59e0b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔐 Code Obfuscator Pro</h1>
+            <p>Protégez votre code avec une obfuscation multi-couches avancée</p>
+        </div>
+
+        <div class="dashboard">
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab(event, 'obfuscate')">🔒 Obfusquer</button>
+                <button class="tab" onclick="switchTab(event, 'deobfuscate')">🔓 Déobfusquer</button>
+            </div>
+
+            <div id="alert" class="alert"></div>
+
+            <!-- TAB OBFUSCATION -->
+            <div id="obfuscate-tab" class="tab-content active">
+                <div class="input-section">
+                    <h3>📥 Source du code</h3>
+                    <div class="input-method">
+                        <button class="active" onclick="switchInput(event, 'text')">✍️ Coller le code</button>
+                        <button onclick="switchInput(event, 'file')">📁 Charger un fichier</button>
+                    </div>
+
+                    <textarea id="input-text" placeholder="Collez votre code HTML, CSS ou JavaScript ici..."></textarea>
+                    
+                    <div id="file-upload" class="file-upload">
+                        <input type="file" id="file-input" accept=".html,.css,.js,.htm" onchange="handleFileSelect(event)">
+                        <div onclick="document.getElementById('file-input').click()">
+                            <p style="font-size: 3em; margin-bottom: 10px;">📤</p>
+                            <p style="font-size: 1.2em; font-weight: 600; margin-bottom: 5px;">Cliquez pour sélectionner un fichier</p>
+                            <p style="color: #666;">Formats supportés: HTML, CSS, JavaScript</p>
+                        </div>
+                        <div id="file-info" class="file-info"></div>
+                    </div>
+                </div>
+
+                <div class="options">
+                    <div class="option">
+                        <label>🔑 Clé de chiffrement</label>
+                        <input type="text" id="encrypt-key" placeholder="Minimum 4 caractères" value="BJ_DEVS_2024">
+                    </div>
+                    <div class="option">
+                        <label>🎯 Niveau d'obfuscation</label>
+                        <select id="obfuscation-level">
+                            <option value="basic">Basique (rapide)</option>
+                            <option value="medium" selected>Moyen (recommandé)</option>
+                            <option value="advanced">Avancé (maximum)</option>
+                        </select>
+                    </div>
+                    <div class="option">
+                        <label>
+                            <input type="checkbox" id="add-comments" checked>
+                            Ajouter des commentaires de protection
+                        </label>
+                    </div>
+                    <div class="option">
+                        <label>
+                            <input type="checkbox" id="compress" checked>
+                            Compresser le code
+                        </label>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button class="btn btn-primary" onclick="obfuscateCode()">🔒 Obfusquer le code</button>
+                    <button class="btn btn-secondary" onclick="clearAll()">🗑️ Effacer tout</button>
+                </div>
+
+                <div id="output-obfuscate" class="output-section">
+                    <div class="output-header">
+                        <h3>✅ Code obfusqué</h3>
+                        <div class="output-actions">
+                            <button class="btn btn-success btn-small" onclick="copyOutput()">📋 Copier</button>
+                            <button class="btn btn-primary btn-small" onclick="downloadOutput()">💾 Télécharger</button>
+                        </div>
+                    </div>
+                    <textarea id="output-text" readonly></textarea>
+                    
+                    <div class="stats">
+                        <div class="stat-card">
+                            <h4>Taille originale</h4>
+                            <div class="value" id="original-size">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <h4>Taille obfusquée</h4>
+                            <div class="value" id="obfuscated-size">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <h4>Temps d'exécution</h4>
+                            <div class="value" id="exec-time">0ms</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB DEOBFUSCATION -->
+            <div id="deobfuscate-tab" class="tab-content">
+                <div class="input-section">
+                    <h3>📥 Code obfusqué</h3>
+                    <textarea id="deobfuscate-input" placeholder="Collez votre code obfusqué ici..."></textarea>
+                </div>
+
+                <div class="options">
+                    <div class="option">
+                        <label>🔑 Clé de déchiffrement</label>
+                        <input type="text" id="decrypt-key" placeholder="Entrez la clé utilisée" value="BJ_DEVS_2024">
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button class="btn btn-primary" onclick="deobfuscateCode()">🔓 Déobfusquer le code</button>
+                    <button class="btn btn-secondary" onclick="clearDeobfuscate()">🗑️ Effacer tout</button>
+                </div>
+
+                <div id="output-deobfuscate" class="output-section">
+                    <div class="output-header">
+                        <h3>✅ Code déobfusqué</h3>
+                        <div class="output-actions">
+                            <button class="btn btn-success btn-small" onclick="copyDeobfuscated()">📋 Copier</button>
+                            <button class="btn btn-primary btn-small" onclick="downloadDeobfuscated()">💾 Télécharger</button>
+                        </div>
+                    </div>
+                    <textarea id="deobfuscate-output" readonly></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>© 2024 By @BJ_DEVS - Telegram</p>
+        </div>
+    </div>
+
+    <script>
+        let currentFile = null;
+        let currentFileName = '';
+        let currentFileExt = '';
+
+        // Gestion des onglets
+        function switchTab(event, tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tab + '-tab').classList.add('active');
+            hideAlert();
+        }
+
+        // Gestion des méthodes d'entrée
+        function switchInput(event, method) {
+            document.querySelectorAll('.input-method button').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            if (method === 'text') {
+                document.getElementById('input-text').style.display = 'block';
+                document.getElementById('file-upload').classList.remove('active');
+            } else {
+                document.getElementById('input-text').style.display = 'none';
+                document.getElementById('file-upload').classList.add('active');
+            }
+        }
+
+        // Gestion des fichiers
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            currentFile = file;
+            currentFileName = file.name.substring(0, file.name.lastIndexOf('.'));
+            currentFileExt = file.name.substring(file.name.lastIndexOf('.'));
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('input-text').value = e.target.result;
+                document.getElementById('file-info').innerHTML = `
+                    <strong>✅ Fichier chargé:</strong> ${file.name} (${(file.size / 1024).toFixed(2)} KB)
+                `;
+                document.getElementById('file-info').style.display = 'block';
+            };
+            reader.readAsText(file);
+        }
+
+        // FONCTIONS D'OBFUSCATION (basées sur l'ancien système)
+        function charSubstitution(str) {
+            const map = {
+                'A':'亜','B':'唖','C':'娃','D':'阿','E':'哀','F':'愛','G':'挨','H':'姶',
+                'I':'逢','J':'葵','K':'茜','L':'穐','M':'悪','N':'握','O':'渥','P':'旭',
+                'Q':'葦','R':'芦','S':'鯵','T':'梓','U':'圧','V':'斡','W':'扱','X':'宛',
+                'Y':'姐','Z':'虻'
+            };
+            return str.split('').map(c => {
+                const upper = c.toUpperCase();
+                return map[upper] ? map[upper] : c;
+            }).join('');
+        }
+
+        function reverseCharSubstitution(str) {
+            const reverseMap = {
+                '亜':'A','唖':'B','娃':'C','阿':'D','哀':'E','愛':'F','挨':'G','姶':'H',
+                '逢':'I','葵':'J','茜':'K','穐':'L','悪':'M','握':'N','渥':'O','旭':'P',
+                '葦':'Q','芦':'R','鯵':'S','梓':'T','圧':'U','斡':'V','扱':'W','宛':'X',
+                '姐':'Y','虻':'Z'
+            };
+            return str.split('').map(c => reverseMap[c] || c).join('');
+        }
+
+        function simpleHash(str) {
+            let h = 0;
+            for (let i = 0; i < str.length; i++) {
+                h = (h << 5) - h + str.charCodeAt(i);
+                h |= 0;
+            }
+            return h >>> 0;
+        }
+
+        function xorEncrypt(str, key) {
+            let result = '';
+            for (let i = 0; i < str.length; i++) {
+                result += String.fromCharCode(str.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+            }
+            return result;
+        }
+
+        function shuffleString(str, seed) {
+            const arr = str.split('');
+            let currentIndex = arr.length;
+            const random = function() {
+                seed = (seed * 9301 + 49297) % 233280;
+                return seed / 233280;
+            };
+            
+            while (currentIndex !== 0) {
+                const randomIndex = Math.floor(random() * currentIndex);
+                currentIndex--;
+                [arr[currentIndex], arr[randomIndex]] = [arr[randomIndex], arr[currentIndex]];
+            }
+            return arr.join('');
+        }
+
+        function unshuffleString(str, seed) {
+            const arr = str.split('');
+            const indices = [];
+            const random = function() {
+                seed = (seed * 9301 + 49297) % 233280;
+                return seed / 233280;
+            };
+            
+            for (let i = arr.length - 1; i > 0; i--) {
+                indices.push(Math.floor(random() * (i + 1)));
+            }
+            
+            for (let i = 1; i < arr.length; i++) {
+                const j = indices[arr.length - 1 - i];
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr.join('');
+        }
+
+        // OBFUSCATION PRINCIPALE
+        function obfuscateCode() {
+            const startTime = performance.now();
+            const input = document.getElementById('input-text').value;
+            const key = document.getElementById('encrypt-key').value;
+            
+            if (!input.trim()) {
+                showAlert('Veuillez entrer du code à obfusquer!', 'error');
+                return;
+            }
+            
+            if (key.length < 4) {
+                showAlert('La clé doit contenir au moins 4 caractères!', 'warning');
+                return;
+            }
+
+            try {
+                // Étape 1: Encodage Base64
+                let obfuscated = btoa(unescape(encodeURIComponent(input)));
+                
+                // Étape 2: XOR
+                obfuscated = xorEncrypt(obfuscated, key);
+                
+                // Étape 3: Shuffle
+                const seed = simpleHash(key);
+                obfuscated = shuffleString(obfuscated, seed);
+                
+                // Étape 4: Substitution
+                obfuscated = charSubstitution(obfuscated);
+
+                // Générer le code final
+                const addComments = document.getElementById('add-comments').checked;
+                let finalCode = '';
+                
+                if (addComments) {
+                    finalCode += '<!-- Encryption By @BJ_DEVS on Telegram -->\n';
+                    finalCode += '<!-- This tool encrypts your script with advanced multi-layer obfuscation -->\n\n';
+                }
+                
+                finalCode += `<script>\nvar 芦姐悪扱圧斡="${obfuscated}";\n`;
+                finalCode += generateDeobfuscationScript(key);
+                finalCode += '\n</script>';
+
+                // Afficher le résultat
+                document.getElementById('output-text').value = finalCode;
+                document.getElementById('output-obfuscate').classList.add('show');
+                
+                // Stats
+                const endTime = performance.now();
+                document.getElementById('original-size').textContent = formatSize(input.length);
+                document.getElementById('obfuscated-size').textContent = formatSize(finalCode.length);
+                document.getElementById('exec-time').textContent = (endTime - startTime).toFixed(2) + 'ms';
+                
+                showAlert('✅ Code obfusqué avec succès!', 'success');
+            } catch (error) {
+                showAlert('❌ Erreur lors de l\'obfuscation: ' + error.message, 'error');
+            }
+        }
+
+        function generateDeobfuscationScript(key) {
+            return `(function(k){
+    var key="${key}";
+    function xorDecrypt(s,k){let r='';for(let i=0;i<s.length;i++){r+=String.fromCharCode(s.charCodeAt(i)^k.charCodeAt(i%k.length));}return r;}
+    function decodeB64(s){return decodeURIComponent(escape(atob(s)));}
+    function hash(s){let h=0;for(let i=0;i<s.length;i++){h=(h<<5)-h+s.charCodeAt(i);h|=0;}return h>>>0;}
+    function unshuffle(s,seed){const arr=s.split('');const indices=[];const random=function(){seed=(seed*9301+49297)%233280;return seed/233280;};for(let i=arr.length-1;i>0;i--){indices.push(Math.floor(random()*(i+1)));}for(let i=1;i<arr.length;i++){const j=indices[arr.length-1-i];[arr[i],arr[j]]=[arr[j],arr[i]];}return arr.join('');}
+    function reverseSub(s){const m={'亜':'A','唖':'B','娃':'C','阿':'D','哀':'E','愛':'F','挨':'G','姶':'H','逢':'I','葵':'J','茜':'K','穐':'L','悪':'M','握':'N','渥':'O','旭':'P','葦':'Q','芦':'R','鯵':'S','梓':'T','圧':'U','斡':'V','扱':'W','宛':'X','姐':'Y','虻':'Z'};return s.split('').map(c=>m[c]||c).join('');}
+    var d=unshuffle(reverseSub(芦姐悪扱圧斡),hash(key));
+    var dec=decodeB64(xorDecrypt(d,key));
+    document.write(dec);
+})(window);`;
+        }
+
+        // DÉOBFUSCATION
+        function deobfuscateCode() {
+            const input = document.getElementById('deobfuscate-input').value;
+            const key = document.getElementById('decrypt-key').value;
+            
+            if (!input.trim()) {
+                showAlert('Veuillez entrer du code à déobfusquer!', 'error');
+                return;
+            }
+            
+            try {
+                // Extraire le code obfusqué
+                const match = input.match(/var 芦姐悪扱圧斡="(.+?)";/);
+                if (!match) {
+                    showAlert('Format de code obfusqué invalide!', 'error');
+                    return;
+                }
+                
+                let obfuscated = match[1];
+                
+                // Processus inverse
+                obfuscated = reverseCharSubstitution(obfuscated);
+                obfuscated = unshuffleString(obfuscated, simpleHash(key));
+                obfuscated = xorEncrypt(obfuscated, key);
+                const decoded = decodeURIComponent(escape(atob(obfuscated)));
+                
+                document.getElementById('deobfuscate-output').value = decoded;
+                document.getElementById('output-deobfuscate').classList.add('show');
+                
+                showAlert('✅ Code déobfusqué avec succès!', 'success');
+            } catch (error) {
+                showAlert('❌ Erreur: Clé incorrecte ou code invalide!', 'error');
+            }
+        }
+
+        // UTILITAIRES
+        function copyOutput() {
+            const text = document.getElementById('output-text');
+            text.select();
+            document.execCommand('copy');
+            showAlert('📋 Code copié dans le presse-papiers!', 'success');
+        }
+
+        function copyDeobfuscated() {
+            const text = document.getElementById('deobfuscate-output');
+            text.select();
+            document.execCommand('copy');
+            showAlert('📋 Code copié dans le presse-papiers!', 'success');
+        }
+
+        function downloadOutput() {
+            const content = document.getElementById('output-text').value;
+            const filename = currentFileName || 'obfuscated';
+            const ext = currentFileExt || '.html';
+            downloadFile(content, filename + '_obfuscated' + ext);
+        }
+
+        function downloadDeobfuscated() {
+            const content = document.getElementById('deobfuscate-output').value;
+            downloadFile(content, 'deobfuscated.html');
+        }
+
+        function downloadFile(content, filename) {
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(url);
+            showAlert('💾 Fichier téléchargé avec succès!', 'success');
+        }
+
+        function formatSize(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1048576) return (bytes / 1024).toFixed(2) + ' KB';
+            return (bytes / 1048576).toFixed(2) + ' MB';
+        }
+
+        function showAlert(message, type) {
+            const alert = document.getElementById('alert');
+            alert.className = 'alert alert-' + type + ' show';
+            alert.textContent = message;
+            setTimeout(() => hideAlert(), 5000);
+        }
+
+        function hideAlert() {
+            document.getElementById('alert').classList.remove('show');
+        }
+
+        function clearAll() {
+            document.getElementById('input-text').value = '';
+            document.getElementById('output-text').value = '';
+            document.getElementById('file-info').style.display = 'none';
+            document.getElementById('output-obfuscate').classList.remove('show');
+            currentFile = null;
+            hideAlert();
+        }
+
+        function clearDeobfuscate() {
+            document.getElementById('deobfuscate-input').value = '';
+            document.getElementById('deobfuscate-output').value = '';
+            document.getElementById('output-deobfuscate').classList.remove('show');
+            hideAlert();
+        }
+    </script>
+</body>
+</html>

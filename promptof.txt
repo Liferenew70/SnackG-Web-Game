@@ -1,0 +1,13 @@
+voici l'image du site qui permet de cacher un code html, pour éviter qu'il soit volé.
+
+c'était mon ancien site, je veux créer un autre site pour cacher mon code frontend (html, css et  javascript côté client), mais j'avais fait une obfuscation de mon site qui me permet d'offusquer les site, ce qui fait que  je ne me retrouve pas pour améliorer le code de mon site.
+
+donc là on va essyer de créer un nouveau site, avec une interface beaucoup plus dynamique, plus dashboard, avec plus de fonctionnalité.
+
+donc ta mission première sera de comprendre le mécanisme de codification de mon ancien site; pour rappel voici le code de mon site d'ofsucation : (voir code source ofscucer).
+
+après avoir compris comment il fait pour masuqer les sites avec une technique super avancer, tu vas me créer mon nouveau site d'obfuscation.
+
+qu'il y ai posibilité de coler du code (une texarea) , ou de choisir un fichier, puis en sortis, que le code obfuscit soit copiable ou téléchargeable en fichier (si on rentre un fichier html, qui en résor avec le nom du fichier et une extension .html, si c'est css alors  le nom et .css, javascript , nom et .js , pareil pour les autres fichier pris en charge.), puis ajoute une autre option sur mon site où je peux déofuquer mon code que j'avais ofuquer au paravant.
+
+rend mon site très pro, commence le travail
